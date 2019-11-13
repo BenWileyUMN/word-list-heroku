@@ -6,6 +6,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import Regexp, Optional
 import re
+import os
 from os import environ
 
 class WordForm(FlaskForm):
@@ -21,7 +22,7 @@ class WordForm(FlaskForm):
 
 csrf = CSRFProtect()
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "row"
+app.config["SECRET_KEY"] = os.environ['API_KEY']
 csrf.init_app(app)
 
 @app.route('/index')
@@ -84,7 +85,7 @@ def letters_2_words():
                     word_set.add(word)
 
     return render_template('wordlist.html',
-        wordlist=sorted(word_set, key = key_sort), apiKey=environ.get('API_KEY', None),
+        wordlist=sorted(word_set, key = key_sort), apiKey=app.config['SECRET_KEY'],
         name="CS4131")
 
 # create customized sort to sort based on length first, then alphabetically
